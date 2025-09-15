@@ -70,6 +70,58 @@ TEST(ElectionTest, ZeroVotes){
     EXPECT_EQ(candidates[0].votes + candidates[1].votes, 0);
 }
 
+// Тест создания кандидата с описанием
+TEST(CandidateTest, CreationWithDescription) {
+    Description desc("Programming", "Olympiad winner", "Improve education");
+    Candidate candidate("John Doe", desc);
+
+    EXPECT_EQ(candidate.name, "John Doe");
+    EXPECT_EQ(candidate.votes, 0);
+    EXPECT_EQ(candidate.description.interests, "Programming");
+    EXPECT_EQ(candidate.description.achievements, "Olympiad winner");
+    EXPECT_EQ(candidate.description.plans, "Improve education");
+}
+
+// Тест создания кандидата без описания
+TEST(CandidateTest, CreationWithoutDescription) {
+    Candidate candidate("Jane Smith");
+
+    EXPECT_EQ(candidate.name, "Jane Smith");
+    EXPECT_EQ(candidate.votes, 0);
+    EXPECT_EQ(candidate.description.interests, "");
+    EXPECT_EQ(candidate.description.achievements, "");
+    EXPECT_EQ(candidate.description.plans, "");
+}
+
+// Тест default конструктора Description
+TEST(DescriptionTest, DefaultConstructor) {
+    Description desc;
+    
+    EXPECT_EQ(desc.interests, "");
+    EXPECT_EQ(desc.achievements, "");
+    EXPECT_EQ(desc.plans, "");
+}
+
+// Тест параметризованного конструктора Description
+TEST(DescriptionTest, ParameterizedConstructor) {
+    Description desc("Music", "Concert", "Tour");
+    
+    EXPECT_EQ(desc.interests, "Music");
+    EXPECT_EQ(desc.achievements, "Concert");
+    EXPECT_EQ(desc.plans, "Tour");
+}
+
+// Тест вывода описания при голосовании
+TEST(ElectionTest, DisplayDescriptionDuringVoting) {
+    vector<Candidate> candidates;
+    Description desc("Tech", "Projects", "Innovate");
+    candidates.push_back(Candidate("Tech Guy", desc));
+    
+    // Тестируем, что описание корректно хранится
+    EXPECT_EQ(candidates[0].description.interests, "Tech");
+    EXPECT_EQ(candidates[0].description.achievements, "Projects");
+    EXPECT_EQ(candidates[0].description.plans, "Innovate");
+}
 
 int main(int argc, char* argv[])
 {
