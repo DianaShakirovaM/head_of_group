@@ -7,30 +7,32 @@ using namespace std;
 std::istringstream autoUserInput(const std::string& input){
     return std::istringstream(input);
 }
-// Проверка оздания кандидата в старосты
-TEST(CandidateTest, Creation){
+// РћР±РЅРѕРІР»СЏСЋ СЃСѓС‰РµСЃС‚РІСѓСЋС‰РёРµ С‚РµСЃС‚С‹
+TEST(CandidateTest, Creation) {
     Candidate candidate("Kevin Costner");
 
-    // Проверка данных кандидата
     EXPECT_EQ(candidate.name, "Kevin Costner");
     EXPECT_EQ(candidate.votes, 0);
+    // Р”РѕР±Р°РІР»СЏСЋ РїСЂРѕРІРµСЂРєРё РЅР° default РѕРїРёСЃР°РЅРёРµ
+    EXPECT_EQ(candidate.description.interests, "");
+    EXPECT_EQ(candidate.description.achievements, "");
+    EXPECT_EQ(candidate.description.plans, "");
 }
-// Проверка правильности проведения выборов
-TEST(ElectionTest, ConductElection){
+
+TEST(ElectionTest, ConductElection) {
     vector<Candidate> candidates;
     candidates.push_back(Candidate("Candidate1"));
     candidates.push_back(Candidate("Candidate2"));
 
-    // Имитация ввода пользователя и отправка в буфер
     std::istringstream input_stream("1\n2\n0\n");
-    std::cin.rdbuf(input_stream.rdbuf());
+    std::streambuf* orig_cin = std::cin.rdbuf(input_stream.rdbuf());
 
     conductElection(candidates);
 
-    // Проверка правильности подсчёта голосов
+    std::cin.rdbuf(orig_cin);
     EXPECT_EQ(candidates[0].votes + candidates[1].votes, 2);
 }
-// Проверка правильности подсчёта голосов, противодействие фальсификациям
+// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 TEST(ElectionTest, VoteForCandidate){
     vector<Candidate> candidates;
     candidates.push_back(Candidate("Candidate1"));
@@ -42,7 +44,7 @@ TEST(ElectionTest, VoteForCandidate){
 
     EXPECT_EQ(candidates[0].votes, 3);
 }
-// Выборы без кандидатов - деньги на ветер
+// пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ - пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
 TEST(ElectionTest, ZeroCandidates){
     vector<Candidate> candidates;
 
@@ -51,7 +53,7 @@ TEST(ElectionTest, ZeroCandidates){
 
     conductElection(candidates);
 
-    // Пустой ли список кандидатов 
+    // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ 
     EXPECT_TRUE(candidates.empty());
 }
 TEST(ElectionTest, ZeroVotes){
@@ -64,12 +66,64 @@ TEST(ElectionTest, ZeroVotes){
 
     conductElection(candidates);
 
-    // Кандидаты есть
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
     EXPECT_FALSE(candidates.empty());
-    // Голосов у кандидатов нет
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ
     EXPECT_EQ(candidates[0].votes + candidates[1].votes, 0);
 }
 
+// РўРµСЃС‚ СЃРѕР·РґР°РЅРёСЏ РєР°РЅРґРёРґР°С‚Р° СЃ РѕРїРёСЃР°РЅРёРµРј
+TEST(CandidateTest, CreationWithDescription) {
+    Description desc("Programming", "Olympiad winner", "Improve education");
+    Candidate candidate("John Doe", desc);
+
+    EXPECT_EQ(candidate.name, "John Doe");
+    EXPECT_EQ(candidate.votes, 0);
+    EXPECT_EQ(candidate.description.interests, "Programming");
+    EXPECT_EQ(candidate.description.achievements, "Olympiad winner");
+    EXPECT_EQ(candidate.description.plans, "Improve education");
+}
+
+// РўРµСЃС‚ СЃРѕР·РґР°РЅРёСЏ РєР°РЅРґРёРґР°С‚Р° Р±РµР· РѕРїРёСЃР°РЅРёСЏ
+TEST(CandidateTest, CreationWithoutDescription) {
+    Candidate candidate("Jane Smith");
+
+    EXPECT_EQ(candidate.name, "Jane Smith");
+    EXPECT_EQ(candidate.votes, 0);
+    EXPECT_EQ(candidate.description.interests, "");
+    EXPECT_EQ(candidate.description.achievements, "");
+    EXPECT_EQ(candidate.description.plans, "");
+}
+
+// РўРµСЃС‚ default РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂР° Description
+TEST(DescriptionTest, DefaultConstructor) {
+    Description desc;
+    
+    EXPECT_EQ(desc.interests, "");
+    EXPECT_EQ(desc.achievements, "");
+    EXPECT_EQ(desc.plans, "");
+}
+
+// РўРµСЃС‚ РїР°СЂР°РјРµС‚СЂРёР·РѕРІР°РЅРЅРѕРіРѕ РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂР° Description
+TEST(DescriptionTest, ParameterizedConstructor) {
+    Description desc("Music", "Concert", "Tour");
+    
+    EXPECT_EQ(desc.interests, "Music");
+    EXPECT_EQ(desc.achievements, "Concert");
+    EXPECT_EQ(desc.plans, "Tour");
+}
+
+// РўРµСЃС‚ РІС‹РІРѕРґР° РѕРїРёСЃР°РЅРёСЏ РїСЂРё РіРѕР»РѕСЃРѕРІР°РЅРёРё
+TEST(ElectionTest, DisplayDescriptionDuringVoting) {
+    vector<Candidate> candidates;
+    Description desc("Tech", "Projects", "Innovate");
+    candidates.push_back(Candidate("Tech Guy", desc));
+    
+    // РўРµСЃС‚РёСЂСѓРµРј, С‡С‚Рѕ РѕРїРёСЃР°РЅРёРµ РєРѕСЂСЂРµРєС‚РЅРѕ С…СЂР°РЅРёС‚СЃСЏ
+    EXPECT_EQ(candidates[0].description.interests, "Tech");
+    EXPECT_EQ(candidates[0].description.achievements, "Projects");
+    EXPECT_EQ(candidates[0].description.plans, "Innovate");
+}
 
 int main(int argc, char* argv[])
 {

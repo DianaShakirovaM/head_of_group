@@ -18,7 +18,6 @@ struct Description {
     }
 };
 
-// обновила структура Candidate
 struct Candidate {
     string name;
     int votes;
