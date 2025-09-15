@@ -1,74 +1,106 @@
 #include <gtest/gtest.h>
 #include "functions.h"
 #include <iostream>
+#include <sstream>
 
 using namespace std;
 
-std::istringstream autoUserInput(const std::string& input){
-    return std::istringstream(input);
-}
-// Обновляю существующие тесты
-TEST(CandidateTest, Creation) {
+// Тест создания кандидата
+TEST(CandidateTest, Creation){
     Candidate candidate("Kevin Costner");
 
+    // Проверяем данные кандидата
     EXPECT_EQ(candidate.name, "Kevin Costner");
     EXPECT_EQ(candidate.votes, 0);
-    // Добавляю проверки на default описание
     EXPECT_EQ(candidate.description.interests, "");
     EXPECT_EQ(candidate.description.achievements, "");
     EXPECT_EQ(candidate.description.plans, "");
 }
 
-TEST(ElectionTest, ConductElection) {
+// Тест проведения выборов
+TEST(ElectionTest, ConductElection){
     vector<Candidate> candidates;
     candidates.push_back(Candidate("Candidate1"));
     candidates.push_back(Candidate("Candidate2"));
 
+    // Сохраняем оригинальный cin
+    std::streambuf* orig_cin = std::cin.rdbuf();
+    
+    // Создаем input stream с тестовыми данными
     std::istringstream input_stream("1\n2\n0\n");
-    std::streambuf* orig_cin = std::cin.rdbuf(input_stream.rdbuf());
+    std::cin.rdbuf(input_stream.rdbuf());
 
     conductElection(candidates);
 
+    // Восстанавливаем оригинальный cin
     std::cin.rdbuf(orig_cin);
+
+    // Проверяем общее количество голосов
     EXPECT_EQ(candidates[0].votes + candidates[1].votes, 2);
 }
-// �������� ������������ �������� �������, ��������������� ��������������
+
+// Тест голосования за одного кандидата несколько раз
 TEST(ElectionTest, VoteForCandidate){
     vector<Candidate> candidates;
     candidates.push_back(Candidate("Candidate1"));
     candidates.push_back(Candidate("Candidate2"));
 
+    // Сохраняем оригинальный cin
+    std::streambuf* orig_cin = std::cin.rdbuf();
+    
+    // Создаем input stream с тестовыми данными
     std::istringstream input_stream("1\n1\n1\n0\n");
+    std::cin.rdbuf(input_stream.rdbuf());
 
     conductElection(candidates);
 
+    // Восстанавливаем оригинальный cin
+    std::cin.rdbuf(orig_cin);
+
     EXPECT_EQ(candidates[0].votes, 3);
 }
-// ������ ��� ���������� - ������ �� �����
+
+// Тест для нуля кандидатов
 TEST(ElectionTest, ZeroCandidates){
     vector<Candidate> candidates;
 
+    // Сохраняем оригинальный cin
+    std::streambuf* orig_cin = std::cin.rdbuf();
+    
+    // Создаем input stream с тестовыми данными
     std::istringstream input_stream("0\n");
     std::cin.rdbuf(input_stream.rdbuf());
 
     conductElection(candidates);
 
-    // ������ �� ������ ���������� 
+    // Восстанавливаем оригинальный cin
+    std::cin.rdbuf(orig_cin);
+
+    // Проверяем что кандидатов нет
     EXPECT_TRUE(candidates.empty());
 }
+
+// Тест для нуля голосов
 TEST(ElectionTest, ZeroVotes){
     vector<Candidate> candidates;
     candidates.push_back(Candidate("Candidate1"));
     candidates.push_back(Candidate("Candidate2"));
 
+    // Сохраняем оригинальный cin
+    std::streambuf* orig_cin = std::cin.rdbuf();
+    
+    // Создаем input stream с тестовыми данными
     std::istringstream input_stream("0\n");
     std::cin.rdbuf(input_stream.rdbuf());
 
     conductElection(candidates);
 
-    // ��������� ����
+    // Восстанавливаем оригинальный cin
+    std::cin.rdbuf(orig_cin);
+
+    // Проверяем что кандидаты есть
     EXPECT_FALSE(candidates.empty());
-    // ������� � ���������� ���
+    // Проверяем что голосов нет
     EXPECT_EQ(candidates[0].votes + candidates[1].votes, 0);
 }
 
