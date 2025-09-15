@@ -21,7 +21,7 @@ struct Description {
 struct Candidate {
     string name;
     int votes;
-    Description description;  // Добавила описание
+    Description description;  // описание
 
     Candidate(string n, Description desc = Description()) {
         name = n;
@@ -29,7 +29,6 @@ struct Candidate {
         description = desc;
     }
 };
-
 // Searching for the length of the longest name of candidate
 int canditatesLongestName(vector<Candidate>& candidates){
     int candidates_longest_name_length = 0;
@@ -70,14 +69,10 @@ void outputElection(vector<Candidate>& candidates){
 void conductElection(vector<Candidate>& candidates) {
     cout << "Voting for the choice of the headman!" << endl;
 
-    // Вывод кандидатов с описанием
+    // ����� ������ ����������
     cout << "Candidates:" << endl;
     for (int i = 0; i < candidates.size(); i++) {
         cout << i + 1 << ". " << candidates[i].name << endl;
-        cout << "   Interests: " << candidates[i].description.interests << endl;
-        cout << "   Achievements: " << candidates[i].description.achievements << endl;
-        cout << "   Plans: " << candidates[i].description.plans << endl;
-        cout << endl;
     }
 
     // ���� �����������
