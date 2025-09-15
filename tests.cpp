@@ -7,27 +7,29 @@ using namespace std;
 std::istringstream autoUserInput(const std::string& input){
     return std::istringstream(input);
 }
-// �������� ������� ��������� � ��������
-TEST(CandidateTest, Creation){
+// Обновляю существующие тесты
+TEST(CandidateTest, Creation) {
     Candidate candidate("Kevin Costner");
 
-    // �������� ������ ���������
     EXPECT_EQ(candidate.name, "Kevin Costner");
     EXPECT_EQ(candidate.votes, 0);
+    // Добавляю проверки на default описание
+    EXPECT_EQ(candidate.description.interests, "");
+    EXPECT_EQ(candidate.description.achievements, "");
+    EXPECT_EQ(candidate.description.plans, "");
 }
-// �������� ������������ ���������� �������
-TEST(ElectionTest, ConductElection){
+
+TEST(ElectionTest, ConductElection) {
     vector<Candidate> candidates;
     candidates.push_back(Candidate("Candidate1"));
     candidates.push_back(Candidate("Candidate2"));
 
-    // �������� ����� ������������ � �������� � �����
     std::istringstream input_stream("1\n2\n0\n");
-    std::cin.rdbuf(input_stream.rdbuf());
+    std::streambuf* orig_cin = std::cin.rdbuf(input_stream.rdbuf());
 
     conductElection(candidates);
 
-    // �������� ������������ �������� �������
+    std::cin.rdbuf(orig_cin);
     EXPECT_EQ(candidates[0].votes + candidates[1].votes, 2);
 }
 // �������� ������������ �������� �������, ��������������� ��������������
